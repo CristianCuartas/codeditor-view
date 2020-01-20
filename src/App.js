@@ -1,22 +1,18 @@
 import React, { Component } from 'react';
-import FormCreateTemplates from './Components/FormCreateTemplates';
+import PropTypes from 'prop-types';
+import Contenido from './Contenido';
 
-class EditCodeView extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-  a = () => {
-    return <h1>Hola</h1>;
+class App extends Component {
+  static propTypes = {
+    children: PropTypes.object.isRequired
   };
   render() {
+    const { children } = this.props;
     return (
-      <div>
-        {this.a()}
-        <FormCreateTemplates />
+      <div className="App">
+        <Contenido body={children} />
       </div>
     );
   }
 }
-
-export default EditCodeView;
+export default App;

@@ -1,19 +1,20 @@
 import React, { Component } from 'react';
 import ShowTemplate from './ShowTemplate';
+import CodeMirror from 'codemirror';
 class FormCreateTemplates extends Component {
   constructor(props) {
     super(props);
     this.state = {
       css: '',
       html: '',
-      showTemplate: ''
+      showTemplate: '',
+      modalPreviewTemplate: false
     };
   }
 
   renderHTML(value) {
     const html = value || document.getElementById('txthtml').value;
-    // document.getElementById('divView').innerHTML = html;
-
+    console.log(value);
     this.setState({
       html
     });
@@ -21,8 +22,7 @@ class FormCreateTemplates extends Component {
 
   renderCSS(value) {
     const css = value || document.getElementById('txtcss').value;
-    // document.getElementById('style').innerHTML = css;
-
+    console.log(value);
     this.setState({
       css
     });
@@ -30,7 +30,9 @@ class FormCreateTemplates extends Component {
 
   processTemplate = (renderHTML, renderCSS) => {
     renderHTML = this.state.html;
+
     renderCSS = this.state.css;
+
     let template = `
       <!DOCTYPE html>
       <html lang="en">
@@ -42,9 +44,9 @@ class FormCreateTemplates extends Component {
           <style>${renderCSS}</style>
       </head>
       <body>
-          
       </body>
       </html>`;
+
     setTimeout(() => {
       this.Template((template += renderHTML));
     }, 2000);
@@ -58,26 +60,67 @@ class FormCreateTemplates extends Component {
     });
   }
 
+  vistaPrevia() {
+    window.open('#preview', 'preview', 'width=700, height=505');
+  }
+
+  openModalEdit() {
+    this.refs.child.toggle();
+  }
+  // componentDidMount() {
+  //   this.editor();
+  // }
+
+  editor = () => {
+    CodeMirror.fromTextArea(document.getElementById('txthtml'), {
+      mode: 'HTML',
+      lineNumbers: true
+    });
+
+    CodeMirror.fromTextArea(document.getElementById('txtcss'), {
+      mode: 'css',
+      lineNumbers: true
+    });
+  };
+
   render() {
     return (
       <div>
         <form>
+          <div className="row">
+            <div className="col-6"></div>
+            <div className="col-6"></div>
+          </div>
           <textarea
-            id="txthtml"
             rows={'15'}
             cols={'80'}
+            id="txthtml"
             onKeyUp={e => this.renderHTML(e.target.value)}
           >
             {this.processTemplate()}
           </textarea>
           <textarea
-            id="txtcss"
             rows={'15'}
             cols={'80'}
+            id="txtcss"
             onKeyUp={e => this.renderCSS(e.target.value)}
           ></textarea>
+          <br />
         </form>
-        <ShowTemplate template={this.state.showTemplate} />
+        <button
+          className="btn btn-secondary btn-sm"
+          data-trigger="hover"
+          onClick={() => {
+            this.openModalEdit();
+          }}
+        >
+          Vista previa
+        </button>
+        <ShowTemplate
+          ref="child"
+          template={this.state.showTemplate}
+          modal={this.state.modalPreviewTemplate}
+        />
       </div>
     );
   }
